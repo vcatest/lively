@@ -4,6 +4,7 @@ on:
     branches: [ "core-separation" ]
   pull_request:
     branches: [ "core-separation" ]
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
