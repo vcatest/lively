@@ -36,15 +36,18 @@ jobs:
         
     ## NEW: Start SonarScanner (Hook into build)
     - name: SonarScanner Begin
+      working-directory: ./src/Lively
       # Note: Replace "your_organization_key" with your actual SonarCloud organization key
       run: dotnet sonarscanner begin /k:"vcatest_lively" /o:"vcatest" /d:sonar.token="96776fa54a595ed6a86cfb00e41cf351b5af5c0e" /d:sonar.host.url="https://sonarcloud.io/"
       
     ## NEW: Build the project (Required for Sonar analysis)
     - name: Build Project
+      working-directory: ./src/Lively
       run: dotnet build # Add your .sln or .csproj path here if it's not in the root directory
       
     ## NEW: End SonarScanner (Upload analysis to Sonar server)
     - name: SonarScanner End
+      working-directory: ./src/Lively
       run: dotnet sonarscanner end /d:sonar.token="96776fa54a595ed6a86cfb00e41cf351b5af5c0e"
 
     # - name: Embold Analyse
