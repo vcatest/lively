@@ -13,15 +13,16 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Install dependencies (curl, wget, libssl1.1)
+    - name: Install dependencies (curl, wget, libssl1.1, wine)
       run: |
         apt-get update
-        apt-get install curl wget libssl1.1 -y 
+        # Added wine64 and wine-binfmt so Linux can natively execute XamlCompiler.exe 
+        DEBIAN_FRONTEND=noninteractive apt-get install curl wget libssl1.1 wine64 wine-binfmt -y 
         
     ## UPDATED: SonarScanner requires Java 17+. Embold will also work fine with this.
     - name: Install Java for Embold & SonarScanner
       run: |
-        apt-get install openjdk-17-jre -y 
+        DEBIAN_FRONTEND=noninteractive apt-get install openjdk-17-jre -y 
         
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -43,7 +44,8 @@ jobs:
     ## NEW: Build the project (Required for Sonar analysis)
     - name: Build Project
       working-directory: ./src/Lively
-      run: dotnet build -p:EnableWindowsTargeting=true -p:PostBuildEvent=  -p:GenerateResourceUsePreserializedResources=true # Add your .sln or .csproj path here if it's not in the root directory
+      # Added: AutomaticallyUseReferenceAssemblyPackages=true to fetch .NET 4.7.2 packs via NuGet
+      run: dotnet build -p:EnableWindowsTargeting=true -p:PostBuildEvent= -p:GenerateResourceUsePreserializedResources=true -p:AutomaticallyUseReferenceAssemblyPackages=true
       
     ## NEW: End SonarScanner (Upload analysis to Sonar server)
     - name: SonarScanner End
